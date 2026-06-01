@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toey's Phrasebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4ece0; --paper-2:#ece1d1; --ink:#2b2620; --ink-soft:#6b6256;
+    --line:#d8cbb8; --accent:#c0512f; --accent-soft:#e7c4b4; --gold:#a8852c;
+    --green:#5c7a4a; --card:#fbf6ee; --shadow:rgba(43,38,32,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Hanken Grotesk",system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(120% 80% at 50% -10%, #f8f1e6 0%, var(--paper) 55%, var(--paper-2) 100%);
+    min-height:100vh;display:flex;justify-content:center;padding:18px 14px 60px;-webkit-font-smoothing:antialiased;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .app{width:100%;max-width:440px;position:relative;z-index:1}
+  .brand{font-family:"Fraunces",serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .title{font-family:"Fraunces",serif;font-weight:500;font-size:34px;line-height:1.05;margin:14px 0 2px;letter-spacing:-.01em}
+  .title em{font-style:italic;color:var(--accent)}
+  .subtitle{color:var(--ink-soft);font-size:14px;margin-bottom:16px}
+  .stats{display:flex;gap:10px;margin-bottom:18px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 1px 0 var(--shadow)}
+  .stat .n{font-family:"Fraunces",serif;font-size:26px;font-weight:600;line-height:1}
+  .stat .l{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);margin-top:4px}
+  .stat.gold .n{color:var(--gold)} .stat.green .n{color:var(--green)}
+  .tabs{display:flex;background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:18px}
+  .tabs button{flex:1;border:0;background:transparent;cursor:pointer;font-family:"Hanken Grotesk";font-weight:600;font-size:14px;color:var(--ink-soft);padding:9px;border-radius:999px;transition:.18s}
+  .tabs button.active{background:var(--card);color:var(--ink);box-shadow:0 1px 4px var(--shadow)}
+  .cards{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px;box-shadow:0 2px 10px -6px var(--shadow);position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent-soft)}
+  .card.mastered::before{background:var(--green)}
+  .phrase{font-family:"Fraunces",serif;font-style:italic;font-size:21px;font-weight:500;line-height:1.2;color:var(--ink);flex:1}
+  .phrase-row{display:flex;align-items:flex-start;gap:10px}
+  .speak{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:15px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:.15s;padding:0}
+  .speak:hover{border-color:var(--accent)} .speak:active{transform:scale(.9);background:var(--accent-soft)}
+  .meaning{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
+  .example{font-size:14px;margin-top:9px;padding-left:11px;border-left:2px solid var(--line);color:#4a4338}
+  .meta{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+  .src{font-size:11.5px;color:var(--ink-soft)} .src b{color:var(--accent);font-weight:600}
+  .tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;padding:3px 9px;border-radius:999px}
+  .tag.rot{background:var(--accent-soft);color:#8a3a20} .tag.mas{background:#d6e2cb;color:#3f5630}
+  .empty{text-align:center;color:var(--ink-soft);padding:40px 10px;font-size:14px}
+  .addbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent);color:#fff;text-decoration:none;font-family:"Hanken Grotesk";font-weight:700;font-size:15px;padding:13px;border-radius:12px;margin-bottom:18px;transition:.15s;box-shadow:0 3px 12px -5px var(--accent)}
+  .addbtn:hover{filter:brightness(1.05)} .addbtn:active{transform:scale(.99)}
+  .review{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;box-shadow:0 4px 18px -10px var(--shadow);text-align:center}
+  .review .progress{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px}
+  .review .clue-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .review .cloze{font-family:"Fraunces",serif;font-size:21px;line-height:1.6;color:var(--ink);min-height:72px;display:block;text-align:left;padding:8px 2px}
+  .review .cloze .blank{display:inline-block;max-width:70%;border-bottom:2.5px solid var(--accent);vertical-align:-3px;margin:0 6px}
+  .review .src{margin-top:6px}
+  .review .answer{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+  .review .answer .phrase{font-size:23px} .review .answer .meaning{margin-top:6px}
+  .prompt{font-size:13.5px;color:var(--ink-soft);margin:14px 0 4px;font-style:italic}
+  .btn{width:100%;font-family:"Hanken Grotesk";font-weight:700;font-size:15px;border:0;border-radius:12px;padding:14px;cursor:pointer;transition:.16s;margin-top:16px}
+  .btn.reveal{background:var(--ink);color:var(--paper)} .btn.reveal:active{transform:scale(.99)}
+  .row2{display:flex;gap:10px;margin-top:16px} .row2 .btn{margin-top:0}
+  .btn.again{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+  .btn.got{background:var(--green);color:#fff}
+  .done{text-align:center;padding:36px 14px}
+  .done .big{font-family:"Fraunces",serif;font-size:30px;color:var(--green);margin-bottom:8px}
+  .done p{color:var(--ink-soft);font-size:14px;margin-bottom:18px}
+  .restart{background:transparent;border:1.5px solid var(--line);color:var(--ink);font-weight:600;padding:11px 20px;border-radius:999px;cursor:pointer;font-family:"Hanken Grotesk"}
+  .footnote{margin-top:24px;font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.6;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">Phrasebook</div>
+  <h1 class="title" id="title"></h1>
+  <div class="subtitle">Phrases you've collected, in your own words.</div>
+  <div class="stats">
+    <div class="stat"><div class="n" id="s-rot">0</div><div class="l">In rotation</div></div>
+    <div class="stat green"><div class="n" id="s-mas">0</div><div class="l">Mastered</div></div>
+    <div class="stat gold"><div class="n" id="s-tot">0</div><div class="l">Total</div></div>
+  </div>
+  <a class="addbtn" href="https://docs.google.com/forms/d/e/1FAIpQLSfdmW0IiiBZZe0P8BoyMbAKyc2x1oUjAdghv3q4-8bGPcjrRA/viewform" target="_blank" rel="noopener">＋ Add a phrase</a>
+  <div class="tabs">
+    <button id="tab-coll" class="active" onclick="setMode('coll')">My Phrases</button>
+    <button id="tab-rev" onclick="setMode('rev')">Review</button>
+  </div>
+  <div id="view"></div>
+  <div class="footnote">
+    Updated each week from the phrases you send your tutor.<br>
+    Mastered = you used it correctly in a brand-new sentence in class.
+  </div>
+</div>
+<script>
+/* =========================================================================
+   EDIT ONLY THIS BLOCK each week.
+   Add:  { phrase, meaning, example, source, status }
+   - example MUST contain the exact phrase text (it gets blanked in Review)
+   - status: "rotation"  or  "mastered"
+   Keep ~15-20 in "rotation". Move old ones to "mastered" after class.
+   ========================================================================= */
+const STUDENT_NAME = "Toey";
+const PHRASES = [];
+
+/* ---------------- app ---------------- */
+let mode="coll", queue=[], idx=0, revealed=false, sessionMastered=0;
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function speak(t){ if(!('speechSynthesis' in window)) return; const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=.9; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+document.addEventListener('click', e=>{ const b=e.target.closest('[data-speak]'); if(b) speak(b.getAttribute('data-speak')); });
+
+function header(){
+  document.getElementById("title").innerHTML = `${STUDENT_NAME}'s <em>Phrasebook</em>`;
+  const rot=PHRASES.filter(p=>p.status==="rotation").length;
+  const mas=PHRASES.filter(p=>p.status==="mastered").length;
+  document.getElementById("s-rot").textContent=rot;
+  document.getElementById("s-mas").textContent=mas;
+  document.getElementById("s-tot").textContent=PHRASES.length;
+}
+function setMode(m){
+  mode=m;
+  document.getElementById("tab-coll").classList.toggle("active",m==="coll");
+  document.getElementById("tab-rev").classList.toggle("active",m==="rev");
+  if(m==="rev") startReview();
+  render();
+}
+function collection(){
+  if(!PHRASES.length) return `<div class="empty">No phrases yet — send your first one to your tutor.</div>`;
+  const order=[...PHRASES].sort((a,b)=>(a.status==="mastered")-(b.status==="mastered"));
+  return `<div class="cards">`+order.map(p=>`
+    <div class="card ${p.status==='mastered'?'mastered':''}">
+      <div class="phrase-row"><div class="phrase">"${p.phrase}"</div><button class="speak" data-speak="${esc(p.phrase)}" aria-label="Play pronunciation">🔊</button></div>
+      <div class="meaning">${p.meaning}</div>
+      <div class="example">${p.example}</div>
+      <div class="meta">
+        <div class="src">from <b>${p.source}</b></div>
+        <div class="tag ${p.status==='mastered'?'mas':'rot'}">${p.status==='mastered'?'Mastered':'In rotation'}</div>
+      </div>
+    </div>`).join("")+`</div>`;
+}
+function startReview(){
+  queue=PHRASES.filter(p=>p.status==="rotation").map(p=>({...p}));
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  idx=0;revealed=false;sessionMastered=0;
+}
+function cloze(p){
+  const w=Math.min(260,Math.max(56,Math.round(p.phrase.length*8.5)));
+  const blank=`<span class="blank" style="width:${w}px"></span>`;
+  const re=new RegExp(p.phrase.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),"i");
+  if(re.test(p.example)) return p.example.replace(re,blank);
+  return `${blank} &mdash; ${p.meaning}`;
+}
+function review(){
+  if(!queue.length) return `<div class="empty">Nothing in rotation to review yet.</div>`;
+  if(idx>=queue.length) return `<div class="done">
+    <div class="big">Done.</div>
+    <p>${sessionMastered} marked mastered this round.<br>Tell your tutor what stuck so the book can update.</p>
+    <button class="restart" onclick="startReview();render()">Run again</button></div>`;
+  const p=queue[idx];
+  const ans=revealed?`
+    <div class="answer"><div class="phrase-row" style="justify-content:center"><div class="phrase" style="flex:none">"${p.phrase}"</div><button class="speak" data-speak="${esc(p.phrase)}" aria-label="Play pronunciation">🔊</button></div><div class="meaning">${p.meaning}</div><div class="src" style="margin-top:8px">from <b>${p.source}</b></div></div>
+    <div class="prompt">Now make a NEW sentence with it out loud.</div>
+    <div class="row2"><button class="btn again" onclick="mark(false)">Again</button>
+    <button class="btn got" onclick="mark(true)">Got it</button></div>`
+    :`<button class="btn reveal" onclick="revealed=true;render()">Reveal</button>`;
+  return `<div class="review">
+    <div class="progress">${idx+1} / ${queue.length}</div>
+    <div class="clue-label">Fill the gap</div>
+    <div class="cloze">${cloze(p)}</div>
+    ${ans}</div>`;
+}
+function mark(got){ if(got) sessionMastered++; idx++; revealed=false; render(); }
+function render(){ document.getElementById("view").innerHTML = mode==="coll"?collection():review(); }
+header(); render();
+</script>
+</body>
+</html>
